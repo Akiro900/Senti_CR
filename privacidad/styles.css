@@ -1,0 +1,145 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #d9eef5;
+  color: #3e566d;
+  line-height: 1.6;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background-color: #145374;
+  color: #f0f9ff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 35px;
+  font-weight: 700;
+}
+
+header h2 {
+  font-weight: 400;
+  font-size: 17px;
+  font-style: italic;
+}
+
+main {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.privacy-card {
+  background: #f0f9ff;
+  border-left: 4px solid #2a9d8f;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.privacy-card h3 {
+  color: #264653;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.privacy-card p {
+  font-size: 16px;
+  color: #3b3b3b;
+  margin-bottom: 10px;
+}
+
+.privacy-card ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  color: #444;
+  font-size: 16px;
+}
+
+.privacy-card li {
+  margin-bottom: 8px;
+}
+
+.contact-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.contact-info h4 {
+  color: #264653;
+  margin-bottom: 10px;
+}
+
+.date-updated {
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+nav {
+  text-align: center;
+  margin-top: 20px;
+}
+
+nav a {
+  background: #2a9d8f;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 30px;
+  margin: 0 10px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(42, 157, 143, 0.4);
+  text-decoration: none;
+}
+
+nav a:hover {
+  background: #21867a;
+  box-shadow: 0 6px 12px rgba(33, 134, 122, 0.6);
+}
+
+.emoji {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+#volverInicio {
+  text-align: center;
+  margin-top: 25px;
+}
+
+#volverInicio a {
+  color: #145374;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+#volverInicio a:hover {
+  color: #0e2e4b;
+  text-decoration: underline;
+}
