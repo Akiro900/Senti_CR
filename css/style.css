@@ -64,6 +64,7 @@ nav {
   padding: 12px 25px;
   border-radius: 30px;
   margin: 0 10px;
+  margin-bottom: 10px;
   font-weight: 600;
   transition: background 0.3s ease;
   display: inline-block;
@@ -102,6 +103,24 @@ form label {
 }
 
 form input {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+
+form select {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+
+form textarea {
   padding: 12px 15px;
   margin-bottom: 20px;
   font-size: 18px;
