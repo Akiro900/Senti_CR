@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foro - Sentí CR</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header>
+    <h1>Sentí CR</h1>
+    <h2>Foro de Apoyo Comunitario</h2>
+  </header>
+
+  <main>
+    <div class="forum-controls">
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar en el foro..." id="searchInput">
+      </div>
+      <button class="new-post-btn" onclick="newPost()">Nueva Publicación</button>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div>
+          <span class="post-user">Usuario Anónimo #1247</span>
+          <span class="anonymous-badge">Anónimo</span>
+        </div>
+        <span class="post-date">Hace 2 horas</span>
+      </div>
+      <div class="post-title">
+        <span class="category-tag">Ansiedad</span>
+        ¿Alguien más se siente abrumado por todo?
+      </div>
+      <div class="post-content">
+        Últimamente me he sentido muy abrumado con todo lo que está pasando. El trabajo, la familia, las
+        noticias... todo parece demasiado. ¿Alguien más se siente así? ¿Qué hacen para manejar estos
+        sentimientos?
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span>👥 12 respuestas</span>
+          <span>❤️ 24 me gusta</span>
+        </div>
+        <button class="reply-btn">Responder</button>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div>
+          <span class="post-user">Usuario Anónimo #5893</span>
+          <span class="anonymous-badge">Anónimo</span>
+        </div>
+        <span class="post-date">Hace 4 horas</span>
+      </div>
+      <div class="post-title">
+        <span class="category-tag">Depresión</span>
+        Pequeños logros del día
+      </div>
+      <div class="post-content">
+        Hoy logré salir de la cama antes del mediodía y preparé un desayuno saludable. Sé que para muchos no es
+        gran cosa, pero para mí es un gran paso. Quería compartir este pequeño triunfo con ustedes.
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span>👥 8 respuestas</span>
+          <span>❤️ 35 me gusta</span>
+        </div>
+        <button class="reply-btn">Responder</button>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div>
+          <span class="post-user">Usuario Anónimo #3621</span>
+          <span class="anonymous-badge">Anónimo</span>
+        </div>
+        <span class="post-date">Hace 1 día</span>
+      </div>
+      <div class="post-title">
+        <span class="category-tag">Consejos</span>
+        Técnicas de respiración que me han funcionado
+      </div>
+      <div class="post-content">
+        Quiero compartir algunas técnicas de respiración que me han ayudado mucho con la ansiedad. La técnica
+        4-7-8 ha sido especialmente útil para mí antes de dormir. ¿Alguien más tiene técnicas que recomienden?
+      </div>
+      <div class="post-footer">
+        <div class="post-stats">
+          <span>👥 15 respuestas</span>
+          <span>❤️ 42 me gusta</span>
+        </div>
+        <button class="reply-btn">Responder</button>
+      </div>
+    </div>
+
+    <nav id="boton">
+      <a href="../index.html">Inicio</a>
+      <a href="../recursos.html">Recursos</a>
+      <a href="../chat/chat.html">Chat de Apoyo</a>
+    </nav>
+
+    <div id="volverInicio">
+      <a href="../index.html">← Volver al inicio</a>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>
