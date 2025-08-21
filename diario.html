@@ -1,0 +1,37 @@
+ <!DOCTYPE html>
+<html>
+    <meta charset="UTF-8">
+<head>
+    <title>Diario - Sentí CR</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+  <body></body>
+   <header><h1>Diario</h1></header>
+ <main>
+ <section id="diario">
+        <h2>Diario Emocional</h2>
+        <form action="diario.php" method="post">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="estado">¿Como te sientes hoy?</label>
+            <select id="estado" name="estado" required>
+                <option value="">Selecciona</option>
+                <option value="feliz">Feliz</option>
+                <option value="triste">Triste</option>
+                <option value="ansioso">Ansioso</option>
+                <option value="estresado">Estresado</option>
+                <option value="neutral">Neutral</option>
+            </select>
+
+            <label for="comentario">¿Quieres escribir algo mas?</label>
+            <textarea id="comentario" name="comentario" rows="4" placeholder="Escribe tus pensamientos..."></textarea>
+
+            <button type="submit">Guardar entrada</button>
+        </form>
+    </section>
+    </main>
+  
+
+    </body>
+    
