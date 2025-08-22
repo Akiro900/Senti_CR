@@ -1,0 +1,30 @@
+# Hago esto para evitar instalar el xampp en mi computadora ya que suele ser una instalacion algo sucia
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: apache_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html/
+    depends_on:
+      - mysql
+  
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 4!rAJMr%*3PyAQGD
+      MYSQL_DATABASE: senti_cr
+      MYSQL_USER: senti_cr_user
+      MYSQL_PASSWORD: 4!rAJMr%*3PyAQGD
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data/:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password

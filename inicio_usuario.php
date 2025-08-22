@@ -32,7 +32,8 @@ $nombre = $_SESSION['nombre'];
                 <a href="diario.html">Diario</a> |
                 <a href="datos.html">Datos</a> |
                 <a href="recursos.html">Recursos</a> |        
-                <a href="foro/foro.html">Foro</a>
+                <a href="foro/index.php">Foro</a> |
+                <a href="chat/index.php">Chat</a> |
                 <a href="logout.php">Cerrar sesión</a>
             </nav>
         </section>

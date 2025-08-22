@@ -1,92 +1,150 @@
 const chatMessages = document.getElementById('chatMessages');
 const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
 
-function sendMessage() {
-  const message = messageInput.value.trim();
-  if (message === '') return;
+// Usar endpoint del MISMO archivo PHP
+const API = 'index.php';
+const LS_SESSION = 'senti_cr_chat_session';
 
-  // Agregar mensaje del usuario
-  addMessage('user', message);
-  messageInput.value = '';
+let SESSION_ID = null;
+let lastId = 0;
+let es = null;
 
-  // Simular respuesta después de medio segundo
-  setTimeout(() => {
-    generateResponse(message);
-  }, 500);
-}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+function formatTime(ts) { try { const d = new Date(ts.replace(' ', 'T')); return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } catch { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } }
 
-function sendQuickMessage(message) {
-  messageInput.value = message;
-  sendMessage();
-}
-
-function addMessage(type, content) {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${type}`;
-
-  const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+function addMessage(type, content, created_at = null, id = null) {
+  if (id && document.querySelector(`[data-mid="${id}"]`)) return;
+  const wrap = document.createElement('div');
+  wrap.className = `message ${type}`;
+  if (id) wrap.dataset.mid = id;
+  const time = created_at ? formatTime(created_at) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   let avatar = '';
-  if (type === 'user') {
-    avatar = '<div class="message-avatar">TU</div>';
-  } else if (type === 'support') {
-    avatar = '<div class="message-avatar">PS</div>';
-  }
-
-  messageDiv.innerHTML = `
-        ${avatar}
-        <div>
-          <div class="message-content">${content}</div>
-          <div class="message-time">${currentTime}</div>
-        </div>
-      `;
-
-  chatMessages.appendChild(messageDiv);
+  if (type === 'user') avatar = '<div class="message-avatar">TU</div>';
+  if (type === 'support') avatar = '<div class="message-avatar">PS</div>';
+  if (type === 'system') avatar = '';
+  wrap.innerHTML = `
+    ${avatar}
+    <div>
+      <div class="message-content">${escapeHtml(content)}</div>
+      <div class="message-time">${time}</div>
+    </div>`;
+  chatMessages.appendChild(wrap);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function generateResponse(userMessage) {
-  // Respuestas generales
-  let responses = [
-    "Gracias por compartir esto conmigo. Es completamente normal sentirse así.",
-    "Entiendo lo que me dices. ¿Te gustaría que exploremos algunas técnicas que podrían ayudarte?",
-    "Tu bienestar es importante. Hablemos sobre estrategias que podrían ser útiles para ti.",
-    "Aprecio tu confianza al compartir esto. ¿Hay algo específico que te gustaría trabajar?",
-    "Es valiente de tu parte buscar ayuda. ¿Cómo te has estado cuidando últimamente?"
-  ];
-
-  // Respuestas específicas por palabra clave
-  if (userMessage.toLowerCase().includes('ansi')) {
-    responses = [
-      "La ansiedad puede ser muy abrumadora. Una técnica que suele ayudar es la respiración profunda: inhala por 4 segundos, mantén por 4, exhala por 6. ¿Te gustaría que practiquemos juntos?",
-      "Entiendo lo difícil que puede ser la ansiedad. ¿Has notado qué situaciones específicas la desencadenan más?",
-      "La ansiedad es tratable y hay muchas herramientas que pueden ayudarte. ¿Te interesaría conocer algunas técnicas de relajación?"
-    ];
-  } else if (userMessage.toLowerCase().includes('estrés')) {
-    responses = [
-      "El estrés es muy común hoy en día. Una buena forma de manejarlo es dividir tus tareas en pequeños pasos. ¿Qué está causando más estrés en tu vida ahora?",
-      "Para el estrés, la actividad física moderada puede ser muy efectiva. ¿Tienes alguna actividad física que disfrutes?",
-      "El estrés puede afectar tanto física como emocionalmente. ¿Has notado cómo se manifiesta en tu cuerpo?"
-    ];
-  } else if (userMessage.toLowerCase().includes('deprimi') || userMessage.toLowerCase().includes('triste')) {
-    responses = [
-      "Es importante que hayas dado este paso para buscar apoyo. Los sentimientos de tristeza son válidos. ¿Te gustaría hablar sobre qué ha estado pasando?",
-      "Gracias por confiar en mí. La tristeza profunda puede ser muy difícil de manejar solo/a. ¿Hay algo que normalmente te ayuda a sentirte mejor, aunque sea un poco?",
-      "Tu bienestar emocional es importante. ¿Has podido mantener alguna rutina diaria o actividad que te dé cierta estructura?"
-    ];
-  }
-
-  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-  addMessage('support', randomResponse);
+function setTyping(on) {
+  let tip = document.getElementById('typingBubble');
+  if (on) {
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.id = 'typingBubble';
+      tip.className = 'message support typing';
+      tip.innerHTML = `
+        <div class="message-avatar">PS</div>
+        <div>
+          <div class="message-content"><span class="dots"><i></i><i></i><i></i></span></div>
+          <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>`;
+      chatMessages.appendChild(tip);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  } else if (tip) tip.remove();
 }
 
-// Permitir envío con Enter
-messageInput.addEventListener('keypress', function (event) {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
+async function initSession() {
+  try {
+    const existing = localStorage.getItem(LS_SESSION);
+    const url = existing ? `${API}?action=init&session_id=${encodeURIComponent(existing)}` : `${API}?action=init`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+
+    if (!data.ok) {
+      if (res.status === 404 && existing) {
+        localStorage.removeItem(LS_SESSION);
+        return initSession();
+      }
+      throw new Error(data.error || 'Error al iniciar');
+    }
+
+
+    const isAgent = !!(data?.data?.viewer && data.data.viewer.is_agent);
+    document.body.classList.toggle('agent-view', isAgent);
+
+    const session = data.data.session;
+    const msgs = data.data.messages || [];
+
+    SESSION_ID = session ? session.id : null;
+    if (SESSION_ID) localStorage.setItem(LS_SESSION, SESSION_ID);
+
+    chatMessages.innerHTML = '';
+    msgs.forEach(m => { addMessage(m.sender, m.content, m.created_at, m.id); lastId = Math.max(lastId, m.id); });
+
+    if (SESSION_ID) connectStream();
+    else addMessage('system', 'No hay conversaciones asignadas por el momento.');
+  } catch (e) {
+    console.error(e);
+    addMessage('system', 'No se pudo iniciar el chat. Reintenta.');
   }
+}
+
+function connectStream() {
+  if (!SESSION_ID) return;
+  if (es) { es.close(); es = null; }
+  es = new EventSource(`${API}?action=stream&session_id=${encodeURIComponent(SESSION_ID)}&after_id=${encodeURIComponent(lastId)}`);
+  es.addEventListener('message', (ev) => {
+    try {
+      const m = JSON.parse(ev.data);
+      lastId = Math.max(lastId, m.id);
+      addMessage(m.sender, m.content, m.created_at, m.id);
+      setTyping(false);
+    } catch (e) { console.warn('msg parse', e); }
+  });
+  es.addEventListener('ping', () => { });
+  es.onerror = () => { /* el navegador reintenta solo */ };
+}
+
+async function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text) return;
+  messageInput.value = '';
+  messageInput.style.height = '40px';
+
+  setTyping(true);
+  sendButton.disabled = true;
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ action: 'send', session_id: SESSION_ID, message: text })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Error al enviar');
+
+  } catch (e) {
+    console.error(e);
+    addMessage('system', 'No se pudo enviar el mensaje. Revisa tu conexión.');
+  } finally {
+    setTyping(false);
+    sendButton.disabled = false;
+  }
+}
+
+function sendQuickMessage(text) { messageInput.value = text; sendMessage(); }
+
+// auto-resize
+messageInput.addEventListener('input', () => {
+  messageInput.style.height = '40px';
+  messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+});
+// Enter para enviar
+messageInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
 
-// Scroll inicial
-chatMessages.scrollTop = chatMessages.scrollHeight;
+// Exponer a HTML
+window.sendMessage = sendMessage;
+window.sendQuickMessage = sendQuickMessage;
+
+// Boot
+initSession();
