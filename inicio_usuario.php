@@ -33,6 +33,8 @@ $nombre = $_SESSION['nombre'];
                 <a href="datos.html">Datos</a> |
                 <a href="recursos.html">Recursos</a> |        
                 <a href="foro/foro.html">Foro</a>
+                <a href="privacidad/privacidad.html">Privacidad</a>|
+                <a href="chat/chat.html">Chat de apoyo</a>|
                 <a href="logout.php">Cerrar sesión</a>
             </nav>
         </section>
