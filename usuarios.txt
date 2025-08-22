@@ -1,0 +1,5 @@
+Nombre: Nicolas Jiménez León
+Edad: 10
+Correo: hola@gmail.com
+Género: masculino
+-----------------------

@@ -22,5 +22,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 //Volver al Menu
-echo '<br><br><a href="index.html"><button>Volver al inicio</button></a>';
+echo '<br><br><a href="inicio_usuario.php"><button>Volver al inicio</button></a>';
 ?>
