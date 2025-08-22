@@ -7,9 +7,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Formatear el contenido a guardar
     $entrada = "Fecha: $fecha\nEstado: $estado\nComentario: $comentario\n-----------------------\n";
 
-    // Guardar en archivo
-    file_put_contents("diario.txt", $entrada, FILE_APPEND);
-
     // Mostrar confirmación
     echo "<h2>Entrada del Diario Guardada</h2>";
     echo "<p><strong>Fecha:</strong> " . htmlspecialchars($fecha) . "</p>";

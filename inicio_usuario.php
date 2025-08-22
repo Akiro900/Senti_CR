@@ -24,13 +24,15 @@ $nombre = $_SESSION['nombre'];
 
     <main>
         <section>
-            <p><strong>Sentí CR es un sitio web que busca brindar herramientas como autoevaluaciones emocionales,
-            seguimiento de estado de ánimo, acceso a profesionales y foros anónimos con el fin del apoyo a la salud mental en Costa Rica.</strong></p>
+            <p><strong>Sentí CR es un sitio seguro donde su bienestar es nuestra prioridad, a continuacion seleccione la herramienta que desee usar como la autoevaluacion emocional,
+             seguimiento de estado de ánimo con el diario, acceso a profesionales y foros anónimos con el fin del apoyo a la
+              salud mental en Costa Rica.</strong></p>
             <nav id="boton">
                 <a href="test.html">Test Emocional</a> |
                 <a href="diario.html">Diario</a> |
                 <a href="datos.html">Datos</a> |
-                <a href="recursos.html">Recursos</a> |
+                <a href="recursos.html">Recursos</a> |        
+                <a href="foro/foro.html">Foro</a>
                 <a href="logout.php">Cerrar sesión</a>
             </nav>
         </section>
