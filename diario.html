@@ -1,41 +1,81 @@
- <!DOCTYPE html>
-<html>
-    <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Diario - Sentí CR</title>
-    <link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <title>Diario - Sentí CR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./css/style.css" />
+
+  <style>
+    .alert { padding: 12px; border-radius: 8px; margin: 10px 0; }
+    .alert.success { background: #e7f9ed; border: 1px solid #b8e6c6; }
+    .alert.error { background: #fdecea; border: 1px solid #f5c2c0; }
+  </style>
 </head>
-  <body></body>
-   <header><h1>Diario</h1></header>
- <main>
- <section id="diario">
-        <h2>Diario Emocional</h2>
-        <form action="diario.php" method="post">
-            <label for="fecha">Fecha</label>
-            <input type="date" id="fecha" name="fecha" required>
+<body>
+  <header>
+    <h1>Diario</h1>
+  </header>
 
-            <label for="estado">¿Como te sientes hoy?</label>
-            <select id="estado" name="estado" required>
-                <option value="">Selecciona</option>
-                <option value="feliz">Feliz</option>
-                <option value="triste">Triste</option>
-                <option value="ansioso">Ansioso</option>
-                <option value="estresado">Estresado</option>
-                <option value="neutral">Neutral</option>
-            </select>
+  <main>
+    <section id="diario">
+      <h2>Diario Emocional</h2>
 
-            <label for="comentario">¿Quieres escribir algo mas?</label>
-            <textarea id="comentario" name="comentario" rows="4" placeholder="Escribe tus pensamientos..."></textarea>
+      <div id="msg" role="alert" aria-live="polite"></div>
 
-            <button type="submit">Guardar entrada</button>
+      <form action="diario.php" method="post">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" name="fecha" required />
 
-            <section id="volverInicio">
-            <p><a href="inicio_usuario.php">← Volver al inicio</a></p>
-        </section>
-        </form>
+        <label for="estado">¿Cómo te sientes hoy?</label>
+        <select id="estado" name="estado" required>
+          <option value="">Selecciona</option>
+          <option value="feliz">Feliz</option>
+          <option value="triste">Triste</option>
+          <option value="ansioso">Ansioso</option>
+          <option value="estresado">Estresado</option>
+          <option value="neutral">Neutral</option>
+        </select>
+
+        <label for="comentario">¿Quieres escribir algo más?</label>
+        <textarea id="comentario" name="comentario" rows="4" placeholder="Escribe tus pensamientos..."></textarea>
+
+        <button type="submit">Guardar entrada</button>
+      </form>
+
+      <section id="volverInicio" style="margin-top: 1rem">
+        <p><a href="inicio_usuario.php">← Volver al inicio</a></p>
+      </section>
     </section>
-    </main>
-  
+  </main>
 
-    </body>
-    
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var msgBox = document.getElementById('msg');
+
+      function decodePlus(s) {
+        return decodeURIComponent(String(s || '').replace(/\+/g, '%20'));
+      }
+
+      if (params.has('ok')) {
+        msgBox.innerHTML = '<div class="alert success">Entrada guardada con éxito.</div>';
+      } else if (params.has('error')) {
+        var text = decodePlus(params.get('error'));
+        msgBox.innerHTML = '<div class="alert error">' + text + '</div>';
+      }
+      if (history.replaceState) {
+        history.replaceState(null, '', location.pathname);
+      }
+
+      var f = document.getElementById('fecha');
+      if (f && !f.value) {
+        var d = new Date();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        f.value = d.getFullYear() + '-' + m + '-' + day;
+      }
+    })();
+  </script>
+</body>
+</html>
