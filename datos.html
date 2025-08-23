@@ -1,41 +1,87 @@
- <!DOCTYPE html>
-<html>
-    <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Datos - Sentí CR</title>
-    <link rel="stylesheet" href="./css/style.css">
+  <meta charset="UTF-8" />
+  <title>Datos - Sentí CR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    .alert { padding: 12px; border-radius: 8px; margin: 10px 0; }
+    .alert.success { background: #e7f9ed; border: 1px solid #b8e6c6; }
+    .alert.error { background: #fdecea; border: 1px solid #f5c2c0; }
+    .muted { color: #666; font-size: .9rem; }
+  </style>
 </head>
-  <body></body>
-   <header><h1>Datos</h1></header>
- <main>
- <section id="datos">
-        <h2>Datos del Usuario</h2>
-        <form action="datos.php" method="post">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" required>
+<body>
+  <header><h1>Datos</h1></header>
 
-            <label for="edad">Edad</label>
-            <input type="number" id="edad" name="edad" min="10" max="100" required>
+  <main>
+    <section id="datos">
+      <h2>Datos del Usuario</h2>
 
-            <label for="correo">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" required>
+      <!-- Mensajes desde ?ok=1 o ?error=... -->
+      <div id="msg" role="alert" aria-live="polite"></div>
 
-            <label for="genero">Género</label>
-            <select id="genero" name="genero">
-                <option value="">Selecciona</option>
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-                <option value="otro">Otro</option>
-            </select>
+      <form id="form-datos" action="datos.php" method="post">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" required autocomplete="name" />
 
-            <button type="submit">Guardar datos</button>
-        </form>
-        <section id="volverInicio">
-            <p><a href="inicio_usuario.php">← Volver al inicio</a></p>
-        </section>
+        <label for="edad">Edad</label>
+        <input type="number" id="edad" name="edad" min="10" max="120" required />
+
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo" required autocomplete="email" />
+
+        <label for="genero">Género</label>
+        <select id="genero" name="genero">
+          <option value="">Selecciona</option>
+          <option value="masculino">Masculino</option>
+          <option value="femenino">Femenino</option>
+          <option value="otro">Otro</option>
+        </select>
+
+        <button type="submit">Guardar datos</button>
+        <p class="muted">Los cambios se guardan en tu perfil (tabla <code>usuarios</code>).</p>
+      </form>
+
+      <section id="volverInicio" style="margin-top:1rem">
+        <p><a href="inicio_usuario.php">← Volver al inicio</a></p>
+      </section>
     </section>
-    </main>
-  
+  </main>
 
-    </body>
-    
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var msgBox = document.getElementById('msg');
+      function decodePlus(s){ return decodeURIComponent(String(s||'').replace(/\+/g,'%20')); }
+
+      if (params.has('ok')) {
+        msgBox.innerHTML = '<div class="alert success">Datos actualizados con éxito.</div>';
+      } else if (params.has('error')) {
+        msgBox.innerHTML = '<div class="alert error">' + decodePlus(params.get('error')) + '</div>';
+      }
+      if (history.replaceState) history.replaceState(null, '', location.pathname);
+
+      fetch('datos_get.php', { credentials: 'same-origin' })
+        .then(async (r) => {
+          if (r.status === 401) throw new Error('No hay sesión. Inicia sesión para ver/editar tus datos.');
+          if (!r.ok) throw new Error('No se pudieron cargar tus datos (' + r.status + ').');
+          return r.json();
+        })
+        .then((json) => {
+          if (!json.ok || !json.data) throw new Error(json.error || 'Sin datos');
+          var d = json.data || {};
+          var byId = (id) => document.getElementById(id);
+          if (byId('nombre')) byId('nombre').value = d.nombre || '';
+          if (byId('edad'))   byId('edad').value   = (d.edad ?? '');
+          if (byId('correo')) byId('correo').value = d.correo || '';
+          if (byId('genero')) byId('genero').value = d.genero || '';
+        })
+        .catch((err) => {
+          msgBox.innerHTML = '<div class="alert error">' + err.message + '</div>';
+        });
+    })();
+  </script>
+</body>
+</html>
