@@ -206,3 +206,14 @@ CREATE TABLE IF NOT EXISTS chat_agents (
   added_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_agents_user FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE chat_sessions
+  ADD COLUMN agent_id INT NULL AFTER user_id,
+  ADD INDEX idx_cs_agent_status (agent_id, status, started_at),
+  ADD INDEX idx_cs_user_status (user_id, status, started_at);
+
+ALTER TABLE chat_sessions
+  ADD CONSTRAINT fk_cs_agent
+    FOREIGN KEY (agent_id) REFERENCES usuarios(id) ON DELETE SET NULL;
+
+CREATE INDEX idx_cm_session_id ON chat_messages (session_id, id);
